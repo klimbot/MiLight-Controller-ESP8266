@@ -169,5 +169,70 @@ void Milight::off(uint8_t channel)
   this->send((0==channel)?0x41:(0x44 + channel*2), 0);
 }
 
+void Milight::onWWCW(uint8_t channel)
+{
+	if (channel >=0 && channel <=4)
+	{
+		this->send(white_on[channel], 0x00);
+	}
+}
 
+void Milight::offWWCW(uint8_t channel)
+{
+	if (channel >=0 && channel <=4)
+	{
+		this->send(white_off[channel], 0x00);
+	}
+}
 
+// BROKEN - changes in lots of 3? (not as many steps as there should be)
+void Milight::brightnessUpWWCW(uint8_t channel)
+{
+	this->onWWCW(channel);
+	this->send(white_brightness_up, 0x00);
+}
+
+// BROKEN - changes in lots of 3? (not as many steps as there should be)
+void Milight::brightnessDownWWCW(uint8_t channel)
+{
+	this->onWWCW(channel);
+	this->send(white_brightness_down, 0x00);
+}
+
+// BROKEN - changes in lots of 3? (not as many steps as there should be)
+void Milight::warmerWWCW(uint8_t channel)
+{
+	this->onWWCW(channel);
+	this->send(ww_increase, 0x00);
+}
+
+// BROKEN - changes in lots of 3? (not as many steps as there should be)
+void Milight::coolerWWCW(uint8_t channel)
+{
+	this->onWWCW(channel);
+	this->send(cw_increase, 0x00);
+}
+
+void Milight::brightnessFullWWCW(uint8_t channel)
+{
+	int time = millis();
+	
+	while(millis() < time+100)
+	{
+		this->send(white_brightness_full[channel], 0x00);
+		this->workQueue();
+	}
+	this->send(white_brightness_full_pressandhold[channel], 0x00);
+}
+
+void Milight::nightModeWWCW(uint8_t channel)
+{
+	int time = millis();
+	
+	while(millis() < time+100)
+	{
+		this->send(white_night_mode[channel], 0x00);
+		this->workQueue();
+	}
+	this->send(white_night_mode_pressandhold[channel], 0x00);
+}
